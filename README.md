@@ -45,9 +45,6 @@ The platform consists of the following major modules:
 * MySQL
 ---
 
-
----
-
 ## 🔄 Platform Workflow
 
 1. User registers and logs in.
@@ -169,8 +166,6 @@ The platform consists of the following major modules:
 * Dispute resolution
 * Recruiter portal for hiring
 * Profile search and reputation metrics
-
----
 
 ---
 
