@@ -1,0 +1,25 @@
+.ss-container { padding: 2rem 2.5rem; max-width: 900px; margin: 0 auto; }
+.ss-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.ss-header h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.04em; margin: 0 0 0.25rem; }
+.ss-header p { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+.ss-stats-row { display: flex; gap: 1rem; }
+.ss-mini-stat { background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+.ss-mini-stat span { font-weight: 800; color: var(--kuro); margin-right: 0.25rem; font-size: 1.1rem; }
+.ss-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.ss-filter-btn { padding: 0.5rem 1.25rem; border-radius: 100px; background: var(--bg-primary); border: 1.5px solid var(--border-light); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.25s; color: var(--text-secondary); }
+.ss-filter-btn.active { background: var(--kuro); color: var(--shiro); border-color: var(--kuro); }
+.ss-filter-btn:hover:not(.active) { background: var(--gray-100); }
+.ss-loading { display: flex; justify-content: center; padding: 3rem; }
+.ss-spinner { width: 32px; height: 32px; border: 3px solid var(--border-light); border-top-color: var(--kuro); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.ss-empty { text-align: center; padding: 4rem; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-xl); color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+.ss-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.ss-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow-sm); }
+.ss-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-color); }
+.ss-card-left { display: flex; gap: 1rem; align-items: center; flex: 1; }
+.ss-card-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--kuro); color: var(--shiro); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+.ss-card-info h3 { font-size: 1rem; font-weight: 700; margin: 0 0 0.15rem; }
+.ss-card-info p { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 0.35rem; }
+.ss-card-info p strong { color: var(--kuro); }
+.ss-card-meta { display: flex; gap: 1rem; }
+.ss-card-meta span { display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+.ss-status-pill { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
