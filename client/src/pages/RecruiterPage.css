@@ -1,0 +1,204 @@
+.recruiter-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.recruiter-header {
+  margin-bottom: 2.5rem;
+}
+
+.recruiter-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: var(--kuro);
+  margin-bottom: 0.5rem;
+}
+
+.recruiter-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  background: var(--shiro);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.filter-item {
+  flex: 1;
+}
+
+.filter-item label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-item input, .filter-item select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--kuro);
+  background: var(--bg-primary);
+}
+
+.filter-item input:focus, .filter-item select:focus {
+  outline: none;
+  border-color: var(--kuro);
+  background: var(--shiro);
+}
+
+.talent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.talent-card {
+  background: var(--shiro);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.talent-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  border-color: var(--kuro);
+}
+
+.proof-score-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--kuro);
+  color: var(--shiro);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.talent-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.talent-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--border-light);
+  border: 2px solid var(--shiro);
+  outline: 2px solid var(--border-light);
+  object-fit: cover;
+}
+
+.talent-info h3 {
+  font-size: 1.35rem;
+  color: var(--kuro);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.talent-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-primary);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.metric {
+  text-align: center;
+}
+
+.metric-val {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--kuro);
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.talent-skills {
+  margin-bottom: 1.5rem;
+}
+
+.skill-tag {
+  display: inline-block;
+  background: var(--bg-primary);
+  color: var(--kuro);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border-light);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.contact-btn {
+  flex: 1;
+  background: var(--kuro);
+  color: var(--shiro);
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.contact-btn:hover {
+  background: #333;
+}
+
+.view-btn {
+  flex: 1;
+  background: transparent;
+  color: var(--kuro);
+  border: 1px solid var(--kuro);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-btn:hover {
+  background: var(--bg-primary);
+}
