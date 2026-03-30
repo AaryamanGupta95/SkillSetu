@@ -1,196 +1,95 @@
-# Smart Skill Economy Platform – Skill Setu
+# 🚀 SkillSetu: Exchange Skills, Not Money
 
-## 📌 Project Description
+SkillSetu is a smart skill-barter platform functioning as a mix of a learning platform, a skill marketplace, and a community. It enables students to teach skills to earn credits and spend them to learn new skills from their peers. Zero cost, infinite growth.
 
-Smart Skill Economy Platform (Skill Setu) is a skill exchange and professional growth platform where users can learn, teach, earn credits, build reputation, join communities, and get hiring opportunities based on their skills and performance.
-
-The goal of this platform is to create a **skill-based professional growth ecosystem** where users grow by teaching, learning, contributing to the community, and building their digital skill identity.
-
----
-
-## 🚀 Major Features
-
-The platform consists of the following major modules:
-
-1. Landing Page (Marketing + Platform Introduction)
-2. Smart Dashboard (User Personalized Dashboard)
-3. Explore Skills Marketplace
-4. Professional Profile Page
-5. Session Booking & Management System
-6. Live Session & Communication System
-7. Credit Wallet & Transactions System
-8. Analytics, Achievements & Gamification
-9. Community & Skill Circles
-10. Admin + Recruiter Portal
+## 🛠️ Tech Stack
+- **Frontend:** React.js, React Router, Vite
+- **Backend:** Node.js, Express.js
+- **Database:** MySQL
+- **ORM:** Sequelize
 
 ---
 
-## 🛠️ Technologies Used
+## 👥 Team Structure & Feature Distribution
 
-### Frontend
+This project was built collaboratively by a team of 5 members, each handling the full stack (React + Node + MySQL + Sequelize) of their respective modules.
 
-* React.js
-* JavaScript
-* HTML
-* CSS
+### 👤 Member 1 – User Entry & Personal Dashboard
+Handles the authentication flow, onboarding, and the main user hub.
+- **Pages:**
+  - `LandingPage` (`/`): Public website with hero section, "how it works", featured mentors, and testimonials.
+  - `AuthPage` (`/auth`): Secure registration and login.
+  - `Dashboard` (`/dashboard`): Smart user home showing credit balances, recommended mentors, current sessions, and notifications.
+  - `NotificationsPage` (`/notifications`): Centralized alerts and updates.
+- **Backend/DB:** Users, Auth, JWT Integration.
 
-### Backend
+### 👤 Member 2 – Skill Marketplace & Profiles
+Manages how users discover learning opportunities and build their distinct learning identity.
+- **Pages:**
+  - `ExplorePage` (`/explore`): Skill marketplace to search and filter mentors/learners by rating, level, and credit costs.
+  - `ProfilePage` (`/profile`): Creating/updating personal profiles, skills offered/learning.
+  - `UserProfilePage` (`/user/:id`): Viewing other users' profiles, reviews, and session history.
+- **Backend/DB:** Skills, UserSkills, Ratings, Reviews.
 
-* Node.js
-* Express.js
-* Sequelize ORM
+### 👤 Member 3 – Session Booking System
+Develops the core interaction of the platform: scheduling and conducting peer-to-peer lessons.
+- **Pages:**
+  - `SessionsPage` (`/sessions`): Viewing and scheduling upcoming learning sessions.
+  - `RequestsPage` (`/requests`): Managing incoming / outgoing session requests.
+  - `SessionRoomPage` (`/session/:id`): Live space for the session including a chat, file sharing, and timer.
+- **Backend/DB:** Sessions, SessionRequests, Messages, Feedback.
 
-### Database
+### 👤 Member 4 – Credit Economy & Gamification
+Architects the platform's internal currency system and motivates users through gamification.
+- **Pages:**
+  - `WalletPage` (`/wallet`): Shows current credits, earned/spent history, and transaction logs.
+  - `CreditStorePage` (`/store`): Platform economy interaction.
+  - `LeaderboardPage` (`/leaderboard`): Gamification features displaying top mentors, hours taught, and badges.
+- **Backend/DB:** Credits, Transactions, Achievements, Leaderboard, UserStats.
 
-* MySQL
----
-
-## 🔄 Platform Workflow
-
-1. User registers and logs in.
-2. User explores skills in marketplace.
-3. User books a learning session.
-4. Mentor accepts or rejects the session.
-5. Credits are locked.
-6. Live session starts with chat and notes.
-7. Session completes.
-8. Credits are transferred.
-9. Users give rating and feedback.
-10. User performance updated in analytics.
-11. User earns badges and achievements.
-12. Users join communities and skill circles.
-13. Recruiters can view top profiles.
-14. Admin manages platform activities.
-
----
-
-## 👥 Team Members & Contributions
-
-### 👤 Member 1 (Aditi Saini)– Public Experience & User Entry
-
-**Pages Developed:**
-
-1. Landing Page
-2. Smart Dashboard
-
-**Responsibilities:**
-
-* Landing page UI and marketing layout
-* How platform works section
-* Featured mentors and testimonials
-* Dashboard with personalized recommendations
-* Ongoing sessions overview
-* Credit balance display
-* Notifications and performance summary
-* Skill growth stats and streak counter
+### 👤 Member 5 – Community & Admin System
+Regulates the ecosystem, ensures safety, and builds collaborative spaces.
+- **Pages:**
+  - `CommunityPage` (`/community`): Skill circles (e.g., React Circle, DSA Circle) with discussion posts.
+  - `CommunityDetailsPage` (`/community/:id`): Deep dive into specific community groups, weekly challenges, and Q&A.
+  - `AdminPage` (`/admin`): Admin portal to view users, manage reports, block users, and verify skills.
+  - `RecruiterPage` (`/recruiter`): Portal for external recruiters to find top mentors based on reputation scores.
+- **Backend/DB:** Communities, Posts, Comments, Reports, Admin/Recruiter interactions.
 
 ---
 
-### 👤 Member 2 (Abhiskeh Gupta)– Marketplace & Profiles
+## 💻 Local Setup & Installation
 
-**Pages Developed:**
-3. Explore Skills Page (Marketplace)
-4. Professional Profile Page
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [MySQL](https://dev.mysql.com/downloads/) installed and running locally.
 
-**Responsibilities:**
+### 1. Database Setup
+1. Create a MySQL database named `skillsetu` (or your preferred name).
+2. Configure your backend `.env` file with your MySQL credentials (User, Password, Database Name, Port).
 
-* Skill search and filter system
-* Trending skills and categories
-* Recommended mentors
-* Professional profile system
-* Skills offered and learning section
-* Ratings and reviews
-* Endorsements and verification badge
-* Teaching history and portfolio
-* Credit score and skill reputation meter
+### 2. Backend (Server) Setup
+```bash
+cd server
+npm install
+npm start
+# The server will start (default is typically port 5000)
+# Sequelize will automatically sync and create tables upon starting.
+```
 
----
-
-### 👤 Member 3 (Jashanpreet Kaur)– Core Business Logic
-
-**Pages Developed:**
-5. Session Booking & Management Page
-6. Live Session & Communication Page
-
-**Responsibilities:**
-
-* Session booking system
-* Session lifecycle management
-* Accept/reject session flow
-* Session status tracking
-* Credit locking logic
-* Live session chat system
-* File sharing and notes
-* Session timer
-* Session completion and feedback system
-* Dispute option
+### 3. Frontend (Client) Setup
+```bash
+cd client
+npm install
+npm run dev
+# The Vite development server will start at http://localhost:5173
+```
 
 ---
 
-### 👤 Member 4 (Aaradhya Mittal) – Economy & Engagement
-
-**Pages Developed:**
-7. Credit Wallet & Transactions Page
-8. Analytics, Achievements & Gamification Page
-
-**Responsibilities:**
-
-* Credit wallet system
-* Transaction history
-* Earned vs spent analytics
-* Locked credits and refund logic
-* Subscription plans and buy credits
-* Performance analytics dashboard
-* Skill growth graphs
-* Achievement badges
-* Leaderboard and ranking system
-* Learning streak system
+## 🤝 Contributing
+- Follow the feature branch workflow: `git checkout -b feature/your-feature-name`
+- Ensure all your specific module models and routes are properly synced with the central `server/app.js` and `db.js`.
 
 ---
-
-### 👤 Member 5 (Aaryaman Gupta)– Community & Expansion
-
-**Pages Developed:**
-9. Community & Skill Circles Page
-10. Admin + Recruiter Portal
-
-**Responsibilities:**
-
-* Skill circles and community groups
-* Discussion threads and challenges
-* Community chat rooms
-* Hackathon announcements
-* Admin dashboard
-* User management and reports
-* Credit flow monitoring
-* Dispute resolution
-* Recruiter portal for hiring
-* Profile search and reputation metrics
-
----
-
-## 📈 Future Scope
-
-* Payment gateway integration
-* Internship and job portal integration
-
----
-
-## 🎯 Project Vision
-
-This platform aims to build a **Skill-Based Professional Growth Ecosystem** where:
-
-* People learn skills
-* People teach skills
-* People earn credits
-* People build reputation
-* People join communities
-* People get hiring opportunities
-
-The long-term vision is to create a **Skill Economy Platform** that connects learning, teaching, community, and hiring in one ecosystem.
-
----
-
-## 📄 Conclusion
-
-Smart Skill Economy Platform is a complete ecosystem that combines skill learning, skill marketplace, credit economy, reputation system, community engagement, analytics, gamification, and hiring opportunities into one integrated platform.
+*Built with passion by Team SkillSetu for a culture of shared learning.*
