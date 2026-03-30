@@ -1,0 +1,368 @@
+/* Editorial Profile Page Styles (Matching Reference) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+.dashboard-content.p-0 {
+  padding: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.editorial-layout {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  min-height: 80vh;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* Left Column */
+.editorial-left {
+  padding: 5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+}
+
+.editorial-eyebrow {
+  color: rgba(0, 0, 0, 0.981);
+  /* Matching the vibrant red/orange from ref */
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.editorial-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  color: #111;
+  line-height: 1.1;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -1px;
+}
+
+.editorial-bio {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.editorial-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 3rem;
+}
+
+.editorial-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.editorial-link:hover {
+  color: #e31717;
+}
+
+.editorial-read-more {
+  color: #e31717;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+}
+
+.editorial-read-more:hover {
+  opacity: 0.8;
+}
+
+.editorial-read-more.small {
+  font-size: 0.75rem;
+}
+
+/* Right Column (Imagery) */
+.editorial-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2rem 2rem 0;
+}
+
+.editorial-main-img-wrapper {
+  position: relative;
+  width: 90%;
+  height: 80vh;
+  max-height: 800px;
+}
+
+.editorial-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* or cover depending on artistic pref */
+  background: #111;
+  /* Bright background in case image has transparency */
+}
+
+.editorial-overlap-img-wrapper {
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 45%; /* Slightly wider to accommodate landscape certificates */
+  height: auto; /* Let the height adapt to aspect ratio */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  background: white;
+  padding: 0.5rem;
+  z-index: 10;
+}
+
+.editorial-overlap-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain; /* Prevents cutting off any part of the certificate */
+}
+
+/* Below the fold */
+.editorial-below-fold {
+  padding: 5rem 3rem;
+  background: #fafafa;
+}
+
+.editorial-section-header {
+  border-bottom: 2px solid #111;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.editorial-section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #111;
+  margin: 0;
+}
+
+.editorial-skills-section {
+  margin-bottom: 5rem;
+}
+
+.editorial-skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.editorial-split-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+/* Feed & Certs Styling */
+.editorial-feed-card {
+  margin-bottom: 2.5rem;
+}
+
+.editorial-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f04e23;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.editorial-post-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.editorial-post-img {
+  width: 100%;
+  background: #eaeaea;
+  object-fit: contain;
+  max-height: 300px;
+}
+
+.editorial-cert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.delete-post-btn-sm {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-post-btn-sm:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.editorial-cert-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.editorial-cert-card img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border: 1px solid #eaeaea;
+}
+
+.cert-text h4 {
+  margin: 0 0 0.5rem 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+}
+
+.cert-text p {
+  margin: 0 0 0.8rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.cert-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  color: #999;
+  font-weight: 500;
+  font-size: 0.8rem;
+  transition: opacity 0.2s;
+}
+
+.cert-star-btn:hover {
+  opacity: 0.7;
+}
+
+.cert-star-btn.featured {
+  color: #f04e23;
+  cursor: default;
+}
+
+.editorial-add-cert {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: white;
+  padding: 1.5rem;
+  border: 1px solid #eaeaea;
+  margin-bottom: 2rem;
+}
+
+/* Edit Form overriding base */
+.editorial-edit-form {
+  padding: 4rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.editorial-grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.editorial-edit-form input,
+.editorial-edit-form textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+.editorial-btn-primary {
+  background: #111;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.editorial-btn-primary:hover {
+  background: #f04e23;
+}
+
+.editorial-btn-primary.small {
+  padding: 0.8rem 1.5rem;
+  width: auto;
+}
+
+.editorial-btn-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #111;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .editorial-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-overlap-img-wrapper {
+    right: 20px;
+    bottom: -20px;
+  }
+
+  .editorial-left {
+    padding: 3rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .editorial-split-section {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-title {
+    font-size: 2.5rem;
+  }
+}
