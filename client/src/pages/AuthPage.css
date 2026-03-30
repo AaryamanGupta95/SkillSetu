@@ -1,0 +1,270 @@
+/* ===== AUTH PAGE — Shirokuro Bright ===== */
+
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ── Left Branding Panel ── */
+.auth-branding {
+  background: var(--kuro);
+  color: var(--shiro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-branding::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -20%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.auth-branding-content {
+  max-width: 420px;
+  position: relative;
+  z-index: 2;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+  letter-spacing: -0.03em;
+}
+
+.auth-branding h1 {
+  font-size: 3rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.auth-highlight {
+  color: var(--shiro);
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+.auth-branding p {
+  color: rgba(255,255,255,0.5);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+}
+
+.auth-stats-row {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.auth-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.auth-stat strong {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.auth-stat span {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 500;
+}
+
+/* ── Right Form Panel ── */
+.auth-form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: var(--bg-primary);
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-form-header {
+  margin-bottom: 2rem;
+}
+
+.auth-form-header h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.auth-form-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* ── Error Message ── */
+.auth-error {
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: #fdf2f2;
+  color: #c0392b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  border: 1px solid #fde8e8;
+}
+
+/* ── Form ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--kuro-muted);
+  letter-spacing: 0.02em;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-primary);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--kuro);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+}
+
+.input-wrapper svg {
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.input-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--kuro);
+}
+
+.input-wrapper input::placeholder {
+  color: var(--gray-400);
+}
+
+.toggle-password {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  color: var(--gray-400);
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: var(--kuro);
+}
+
+/* ── Submit Button ── */
+.auth-submit-btn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 100px;
+  background: var(--kuro);
+  color: var(--shiro);
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid var(--kuro);
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Toggle Link ── */
+.auth-toggle {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.auth-toggle p {
+  font-size: 0.93rem;
+  color: var(--text-secondary);
+}
+
+.toggle-link {
+  font-weight: 700;
+  color: var(--kuro);
+  margin-left: 0.4rem;
+  font-size: 0.93rem;
+  transition: opacity 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.toggle-link:hover {
+  opacity: 0.7;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-branding {
+    display: none;
+  }
+
+  .auth-form-panel {
+    padding: 2rem 1.5rem;
+  }
+}
