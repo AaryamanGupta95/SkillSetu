@@ -23,3 +23,15 @@
 .ss-card-meta { display: flex; gap: 1rem; }
 .ss-card-meta span { display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 .ss-status-pill { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ss-container { padding: 1.25rem; }
+  .ss-header { flex-direction: column; align-items: flex-start; }
+  .ss-header h1 { font-size: 1.4rem; }
+  .ss-stats-row { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.5rem; }
+  .ss-filters { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.5rem; }
+  .ss-card { flex-direction: column; align-items: flex-start; gap: 0.75rem; padding: 1rem; }
+  .ss-card-left { width: 100%; }
+  .ss-card-meta { flex-wrap: wrap; }
+}

@@ -19,6 +19,10 @@ const submitRating = async (req, res) => {
 
     const overallRating = (teachingQuality + communication + helpfulness) / 3;
 
+    // Determine rating type: mentor rating the learner or learner rating the mentor
+    const isMentorRating = req.userId === session.mentorId;
+    const ratingType = isMentorRating ? 'mentor_review' : 'learner_review';
+
     const rating = await Rating.create({
       sessionId,
       raterId: req.userId,
@@ -28,9 +32,10 @@ const submitRating = async (req, res) => {
       helpfulness,
       overallRating: Math.round(overallRating * 10) / 10,
       review: review || '',
+      ratingType,
     });
 
-    if (req.userId === session.mentorId) {
+    if (isMentorRating) {
       session.mentorRated = true;
     } else {
       session.learnerRated = true;
@@ -56,7 +61,38 @@ const submitRating = async (req, res) => {
       linkTo: '/profile',
     });
 
-    // If both rated, distribute credits
+    // ── Only the MENTOR (not the learner/requester) earns credits for rating ──
+    if (isMentorRating) {
+      const ratingCredits = Math.round(overallRating) * 2; // 1★=2, 2★=4, 3★=6, 4★=8, 5★=10
+      let raterWallet = await Wallet.findOne({ where: { userId: req.userId } });
+      if (!raterWallet) raterWallet = await Wallet.create({ userId: req.userId, balance: 150 });
+
+      raterWallet.balance += ratingCredits;
+      raterWallet.totalEarned += ratingCredits;
+      await raterWallet.save();
+
+      await Transaction.create({
+        userId: req.userId,
+        type: 'earned',
+        amount: ratingCredits,
+        description: `Feedback reward for rating session: "${session.topic}" (${Math.round(overallRating)}★)`,
+        sessionId: session.id,
+        balanceAfter: raterWallet.balance,
+      });
+
+      await User.increment('credits', { by: ratingCredits, where: { id: req.userId } });
+
+      await Notification.create({
+        userId: req.userId,
+        type: 'credits_earned',
+        title: 'Feedback Reward 💬',
+        message: `You earned +${ratingCredits} credits for submitting your feedback!`,
+        linkTo: '/wallet',
+      });
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // If both rated, distribute session credits
     await session.reload();
     if (session.mentorRated && session.learnerRated) {
       await distributeCredits(session);

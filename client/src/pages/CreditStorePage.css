@@ -140,3 +140,25 @@
   border: 1px solid #ceead6;
   text-align: center;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .store-container {
+    padding: 1.25rem;
+  }
+
+  .store-header h1 {
+    font-size: 2rem;
+  }
+
+  .wallet-balance-card {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .store-grid {
+    grid-template-columns: 1fr;
+  }
+}

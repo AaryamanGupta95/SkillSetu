@@ -1,6 +1,4 @@
-const User = require('../models/User');
-const Certificate = require('../models/Certificate');
-const Achievement = require('../models/Achievement');
+const { User, Certificate, Achievement } = require('../models');
 
 // Get any user's public profile
 exports.getPublicProfile = async (req, res) => {

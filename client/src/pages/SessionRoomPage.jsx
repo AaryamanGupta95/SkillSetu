@@ -52,6 +52,13 @@ const SessionRoomPage = () => {
       setMessages((prev) => [...prev, message]);
     });
 
+    // ── Listen for session ended by the other party ──────────────────────────
+    newSocket.on('session_ended', () => {
+      setSession((prev) => ({ ...prev, status: 'completed' }));
+      setShowRating(true);
+    });
+    // ─────────────────────────────────────────────────────────────────────────
+
     return () => newSocket.close();
   }, [session, id, currentUser.id]);
 
@@ -79,7 +86,9 @@ const SessionRoomPage = () => {
       } else if (action === 'complete') {
         const { session: s } = await api.completeSession(id);
         setSession(s);
-        socket.emit('send_message', { sessionId: id, senderId: 0, content: 'Session completed. Please rate the session.', type: 'system', createdAt: new Date() });
+        // Notify the other user's screen in real-time
+        socket.emit('session_ended', { sessionId: id });
+        socket.emit('send_message', { sessionId: id, senderId: currentUser.id, content: 'Session completed. Please rate the session.', type: 'system', createdAt: new Date() });
         setShowRating(true);
       }
     } catch (err) { alert(err.message); }
@@ -174,30 +183,67 @@ const SessionRoomPage = () => {
       {showRating && (
         <div className="sr-modal-overlay">
           <div className="sr-modal">
-            <h2>Rate your session</h2>
-            <p>Your feedback helps maintain platform quality.</p>
-            <form onSubmit={submitRatingModel}>
-              <div className="sr-rating-group">
-                <label>Teaching Quality</label>
-                <input type="range" min="1" max="5" value={ratingForm.teachingQuality} onChange={e => setRatingForm({...ratingForm, teachingQuality: parseInt(e.target.value)})} />
-                <span>{ratingForm.teachingQuality} / 5</span>
-              </div>
-              <div className="sr-rating-group">
-                <label>Communication</label>
-                <input type="range" min="1" max="5" value={ratingForm.communication} onChange={e => setRatingForm({...ratingForm, communication: parseInt(e.target.value)})} />
-                <span>{ratingForm.communication} / 5</span>
-              </div>
-              <div className="sr-rating-group">
-                <label>Helpfulness</label>
-                <input type="range" min="1" max="5" value={ratingForm.helpfulness} onChange={e => setRatingForm({...ratingForm, helpfulness: parseInt(e.target.value)})} />
-                <span>{ratingForm.helpfulness} / 5</span>
-              </div>
-              <div className="sr-rating-group">
-                <label>Feedback (Optional)</label>
-                <textarea rows="3" placeholder="Leave a review..." value={ratingForm.review} onChange={e => setRatingForm({...ratingForm, review: e.target.value})}></textarea>
-              </div>
-              <button type="submit" className="sr-submit-rating">Submit Rating</button>
-            </form>
+            {isMentor ? (
+              <>
+                <h2>Rate Your Learner</h2>
+                <p>Your feedback helps others know if this learner is legit and worth teaching. <strong>You earn credits for this!</strong></p>
+                <form onSubmit={submitRatingModel}>
+                  <div className="sr-rating-group">
+                    <label>😊 Comfort &amp; Respectfulness</label>
+                    <p style={{fontSize:'0.78rem', color:'#888', margin:'-6px 0 6px'}}>Was the learner respectful and made the session comfortable?</p>
+                    <input type="range" min="1" max="5" value={ratingForm.teachingQuality} onChange={e => setRatingForm({...ratingForm, teachingQuality: parseInt(e.target.value)})} />
+                    <span>{ratingForm.teachingQuality} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>🎯 Engagement &amp; Effort</label>
+                    <p style={{fontSize:'0.78rem', color:'#888', margin:'-6px 0 6px'}}>Did the learner actively participate and try to learn?</p>
+                    <input type="range" min="1" max="5" value={ratingForm.communication} onChange={e => setRatingForm({...ratingForm, communication: parseInt(e.target.value)})} />
+                    <span>{ratingForm.communication} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>⏰ Punctuality &amp; Seriousness</label>
+                    <p style={{fontSize:'0.78rem', color:'#888', margin:'-6px 0 6px'}}>Was the learner on time and serious about the session?</p>
+                    <input type="range" min="1" max="5" value={ratingForm.helpfulness} onChange={e => setRatingForm({...ratingForm, helpfulness: parseInt(e.target.value)})} />
+                    <span>{ratingForm.helpfulness} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>Comments (Optional)</label>
+                    <textarea rows="3" placeholder="Any notes for other mentors about this learner..." value={ratingForm.review} onChange={e => setRatingForm({...ratingForm, review: e.target.value})}></textarea>
+                  </div>
+                  <button type="submit" className="sr-submit-rating">Submit Feedback &amp; Earn Credits</button>
+                </form>
+              </>
+            ) : (
+              <>
+                <h2>Rate Your Session</h2>
+                <p>Your feedback helps maintain platform quality.</p>
+                <div style={{background:'#fff8e1', border:'1px solid #ffe082', borderRadius:'8px', padding:'10px 14px', marginBottom:'16px', fontSize:'0.85rem', color:'#795548'}}>
+                  ℹ️ As a learner, this feedback is your contribution to the community. Credits are not awarded for learner feedback.
+                </div>
+                <form onSubmit={submitRatingModel}>
+                  <div className="sr-rating-group">
+                    <label>Teaching Quality</label>
+                    <input type="range" min="1" max="5" value={ratingForm.teachingQuality} onChange={e => setRatingForm({...ratingForm, teachingQuality: parseInt(e.target.value)})} />
+                    <span>{ratingForm.teachingQuality} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>Communication</label>
+                    <input type="range" min="1" max="5" value={ratingForm.communication} onChange={e => setRatingForm({...ratingForm, communication: parseInt(e.target.value)})} />
+                    <span>{ratingForm.communication} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>Helpfulness</label>
+                    <input type="range" min="1" max="5" value={ratingForm.helpfulness} onChange={e => setRatingForm({...ratingForm, helpfulness: parseInt(e.target.value)})} />
+                    <span>{ratingForm.helpfulness} / 5</span>
+                  </div>
+                  <div className="sr-rating-group">
+                    <label>Feedback (Optional)</label>
+                    <textarea rows="3" placeholder="Leave a review..." value={ratingForm.review} onChange={e => setRatingForm({...ratingForm, review: e.target.value})}></textarea>
+                  </div>
+                  <button type="submit" className="sr-submit-rating">Submit Feedback</button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}

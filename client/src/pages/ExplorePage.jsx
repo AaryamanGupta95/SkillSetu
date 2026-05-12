@@ -52,6 +52,7 @@ const ExplorePage = () => {
   const [minRating, setMinRating] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [selectedLevel, setSelectedLevel] = useState('All');
+  const [sortBy, setSortBy] = useState('recommended');
 
   const resetFilters = () => {
     setSearchQuery('');
@@ -59,6 +60,7 @@ const ExplorePage = () => {
     setMinRating(0);
     setMaxPrice(1000);
     setSelectedLevel('All');
+    setSortBy('recommended');
   };
 
   const [mentors, setMentors] = useState([]);
@@ -94,7 +96,7 @@ const ExplorePage = () => {
     const rawSkills = mentor.skillsOffered || [];
     const skillsArray = Array.isArray(rawSkills) ? rawSkills : String(rawSkills).split(',');
     
-    const matchesSearch =
+    const matchesSearch = !searchQuery ||
       (mentor.fullName || '').toLowerCase().includes(searchLower) ||
       (mentor.bio && mentor.bio.toLowerCase().includes(searchLower)) ||
       skillsArray.some(skill => String(skill).toLowerCase().includes(searchLower));
@@ -102,7 +104,35 @@ const ExplorePage = () => {
     // 2. Rating Match
     const matchesRating = (Number(mentor.averageRating) || 0) >= minRating;
 
-    return matchesSearch && matchesRating;
+    // 3. Tab (Category) Match
+    const matchesTab = activeTab === 'All' || 
+      skillsArray.some(skill => String(skill).toLowerCase().includes(activeTab.toLowerCase())) ||
+      (mentor.bio && mentor.bio.toLowerCase().includes(activeTab.toLowerCase()));
+
+    // 4. Level Match
+    let matchesLevel = true;
+    if (selectedLevel !== 'All') {
+      const lvl = mentor.level || 1;
+      if (selectedLevel === 'Beginner') matchesLevel = lvl === 1;
+      else if (selectedLevel === 'Intermediate') matchesLevel = lvl >= 2 && lvl <= 4;
+      else if (selectedLevel === 'Advanced') matchesLevel = lvl >= 5;
+    }
+
+    // 5. Price Match (Assuming mentor costs 500 and user costs 0)
+    const dummyCost = mentor.role === 'mentor' ? 500 : 0;
+    const matchesPrice = dummyCost <= maxPrice;
+
+    return matchesSearch && matchesRating && matchesTab && matchesLevel && matchesPrice;
+  });
+
+  const sortedMentors = [...filteredMentors].sort((a, b) => {
+    if (sortBy === 'highest_rated') {
+      return (Number(b.averageRating) || 0) - (Number(a.averageRating) || 0);
+    } else if (sortBy === 'highest_level') {
+      return (Number(b.level) || 1) - (Number(a.level) || 1);
+    }
+    // recommended: sort by reputation score
+    return (Number(b.reputationScore) || 0) - (Number(a.reputationScore) || 0);
   });
 
   return (
@@ -182,6 +212,18 @@ const ExplorePage = () => {
               width="100px"
             />
 
+            <CustomSelect 
+              label="Sort By"
+              value={sortBy}
+              onChange={setSortBy}
+              options={[
+                { value: 'recommended', label: 'Sort By' },
+                { value: 'highest_rated', label: 'Highest Rated' },
+                { value: 'highest_level', label: 'Highest Level' }
+              ]}
+              width="120px"
+            />
+
             <button 
               className="btn-outline filter-btn icon-only" 
               onClick={resetFilters}
@@ -206,14 +248,14 @@ const ExplorePage = () => {
         <section className="directory-section">
           <div className="directory-header">
             <h3>Recommended Mentors</h3>
-            <span className="results-count">Showing {filteredMentors.length} results</span>
+            <span className="results-count">Showing {sortedMentors.length} results</span>
           </div>
 
           <div className="mentor-grid">
-            {filteredMentors.length === 0 ? (
+            {sortedMentors.length === 0 ? (
               <div style={{ padding: '2rem', color: 'var(--text-muted)' }}>No mentors found matching your criteria.</div>
             ) : (
-              filteredMentors.map(mentor => (
+              sortedMentors.map(mentor => (
                 <div
                   key={mentor.id}
                   className="mentor-card"

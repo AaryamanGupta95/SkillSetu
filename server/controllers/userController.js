@@ -80,4 +80,14 @@ const getLeaderboard = async (req, res) => {
   }
 };
 
-module.exports = { getUserProfile, searchUsers, getLeaderboard };
+const getStats = async (req, res) => {
+  try {
+    const totalUsers = await User.count();
+    res.json({ totalUsers, activeProjects: 0 }); // Mocking active projects for now
+  } catch (error) {
+    console.error('Stats error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getUserProfile, searchUsers, getLeaderboard, getStats };

@@ -11,6 +11,7 @@ const Rating = sequelize.define('Rating', {
   helpfulness: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 1, max: 5 } },
   overallRating: { type: DataTypes.FLOAT, allowNull: false },
   review: { type: DataTypes.TEXT, defaultValue: '' },
+  ratingType: { type: DataTypes.ENUM('mentor_review', 'learner_review'), defaultValue: 'mentor_review' },
 }, { tableName: 'ratings', timestamps: true });
 
 module.exports = Rating;

@@ -850,10 +850,29 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 1024px) {
+  .mentors-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .accordion-wrapper {
+    height: 400px;
+  }
+
+  .accordion-details h3 {
+    font-size: 1.8rem;
+    min-width: 200px;
+  }
+}
+
 @media (max-width: 900px) {
-  .steps-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
   .mentors-list {
     grid-template-columns: 1fr;
+    padding: 0 1.5rem;
   }
 
   .impact-grid {
@@ -871,5 +890,136 @@
   .hero-stats {
     flex-direction: column;
     gap: 0.75rem;
+  }
+
+  .mentor-card-landscape {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .mentor-card-left {
+    width: 100%;
+    flex: none;
+  }
+
+  .mentor-name-title {
+    font-size: 1.8rem;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-links a:not(.btn-secondary) {
+    display: none;
+  }
+
+  .nav-links {
+    gap: 0.75rem;
+  }
+
+  .hero {
+    padding-top: 70px;
+    padding-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-cta .btn-primary,
+  .hero-cta .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .accordion-wrapper {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .accordion-card {
+    min-height: 120px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .accordion-card:hover {
+    flex: 3;
+  }
+
+  .accordion-vertical-title {
+    transform: translate(-50%, -50%) rotate(0deg);
+    font-size: 0.9rem;
+  }
+
+  .accordion-details h3 {
+    font-size: 1.4rem;
+    min-width: auto;
+  }
+
+  .accordion-content {
+    padding: 1.5rem;
+  }
+
+  .impact-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .impact-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .impact-value {
+    font-size: 1.8rem;
+  }
+
+  .how-it-works,
+  .explore-skills-section {
+    padding: 3rem 0;
+  }
+
+  .cta-banner {
+    padding: 3rem 0;
+  }
+
+  .cta-banner h2 {
+    font-size: 1.6rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .step-image {
+    height: 200px;
   }
 }

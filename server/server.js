@@ -87,6 +87,11 @@ io.on('connection', (socket) => {
     socket.to(`session_${data.sessionId}`).emit('user_stop_typing', data);
   });
 
+  socket.on('session_ended', (data) => {
+    // Broadcast to everyone else in the session room
+    socket.to(`session_${data.sessionId}`).emit('session_ended', data);
+  });
+
   socket.on('disconnect', () => {
     if (socket.userId) {
       onlineUsers.delete(socket.userId);
@@ -133,4 +138,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, server, startServer };

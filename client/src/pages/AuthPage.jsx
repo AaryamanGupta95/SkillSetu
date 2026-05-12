@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { GraduationCap, Mail, Lock, User, BookOpen, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../config/firebase';
 import { api, saveAuth } from '../services/api';
 import './AuthPage.css';
 
@@ -85,6 +87,23 @@ const AuthPage = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+      
+      const serverResult = await api.firebaseLogin({ idToken });
+      
+      if (serverResult.token) {
+        saveAuth(serverResult.token, serverResult.user);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+      setError(err.message || 'Google sign-in failed. Please try again.');
     }
   };
 
@@ -216,6 +235,40 @@ const AuthPage = () => {
               {!loading && <ArrowRight size={18} />}
             </button>
           </form>
+
+          {(mode === 'login' || mode === 'register') && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#e0e0e0' }}></div>
+                <span style={{ margin: '0 10px', color: '#888', fontSize: '0.9rem' }}>— OR —</span>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#e0e0e0' }}></div>
+              </div>
+              <button 
+                type="button" 
+                onClick={handleGoogleLogin} 
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#fff',
+                  border: '1px solid #ddd',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  color: '#333',
+                  marginBottom: '1.5rem',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+              >
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', marginRight: '10px' }} />
+                Continue with Google
+              </button>
+            </>
+          )}
 
           {(mode === 'login' || mode === 'register') && (
             <div className="auth-toggle">

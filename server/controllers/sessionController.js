@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const {
   SessionRequest, Session, User, Skill, Wallet, Transaction, Notification, Message, Rating,
 } = require('../models');
+const { sendMail, templates } = require('../utils/mailer');
 
 const calculateCredits = (duration, isMentorSession) => {
   const baseRate = isMentorSession ? 2 : 1;
@@ -26,8 +27,13 @@ const createRequest = async (req, res) => {
     const creditsRequired = isMentorSession ? calculateCredits(duration || 60, true) : 0;
 
     if (creditsRequired > 0) {
-      const wallet = await Wallet.findOne({ where: { userId: req.userId } });
-      if (!wallet || wallet.balance < creditsRequired) {
+      let wallet = await Wallet.findOne({ where: { userId: req.userId } });
+      if (!wallet) {
+        // Auto-create wallet for legacy users who don't have one
+        wallet = await Wallet.create({ userId: req.userId, balance: 150 });
+      }
+      
+      if (wallet.balance < creditsRequired) {
         return res.status(400).json({ message: 'Insufficient credits', required: creditsRequired });
       }
     }
@@ -51,6 +57,10 @@ const createRequest = async (req, res) => {
       message: `${sender.fullName} wants to learn ${topic} from you`,
       linkTo: '/requests',
     });
+
+    // Send email to receiver
+    const requestEmail = templates.sessionRequest(receiver.fullName, sender.fullName, topic);
+    sendMail({ to: receiver.email, ...requestEmail });
 
     res.status(201).json({ message: 'Session request sent', request });
   } catch (error) {
@@ -95,8 +105,12 @@ const acceptRequest = async (req, res) => {
     const isMentorSession = receiver.isVerified || receiver.role === 'mentor';
 
     if (isMentorSession && request.creditsRequired > 0) {
-      const wallet = await Wallet.findOne({ where: { userId: request.senderId } });
-      if (!wallet || wallet.balance < request.creditsRequired) {
+      let wallet = await Wallet.findOne({ where: { userId: request.senderId } });
+      if (!wallet) {
+        wallet = await Wallet.create({ userId: request.senderId, balance: 100 });
+      }
+      
+      if (wallet.balance < request.creditsRequired) {
         request.status = 'pending';
         await request.save();
         return res.status(400).json({ message: 'Learner has insufficient credits' });
@@ -134,9 +148,14 @@ const acceptRequest = async (req, res) => {
       linkTo: `/session/${session.id}`,
     });
 
+    // Send session-accepted email to the learner
+    const sender = await User.findByPk(request.senderId, { attributes: ['fullName', 'email'] });
+    const acceptedEmail = templates.sessionAccepted(sender.fullName, receiver.fullName, request.topic, request.scheduledDate);
+    sendMail({ to: sender.email, ...acceptedEmail });
+
     await Message.create({
       sessionId: session.id,
-      senderId: 0,
+      senderId: request.receiverId,
       content: `Session created! Topic: ${request.topic}. Scheduled for ${new Date(request.scheduledDate).toLocaleString()}. Duration: ${request.duration} minutes.`,
       type: 'system',
     });
@@ -223,7 +242,7 @@ const startSession = async (req, res) => {
     session.startTime = new Date();
     await session.save();
 
-    await Message.create({ sessionId: session.id, senderId: 0, content: 'Session has started! Timer is running.', type: 'system' });
+    await Message.create({ sessionId: session.id, senderId: session.mentorId, content: 'Session has started! Timer is running.', type: 'system' });
     res.json({ message: 'Session started', session });
   } catch (error) {
     console.error('StartSession error:', error);
@@ -252,16 +271,26 @@ const completeSession = async (req, res) => {
     await User.increment({ totalHoursTaught: hoursSpent }, { where: { id: session.mentorId } });
     await User.increment({ totalHoursLearned: hoursSpent }, { where: { id: session.learnerId } });
 
-    await Message.create({ sessionId: session.id, senderId: 0, content: 'Session completed! Please rate your experience.', type: 'system' });
+    await Message.create({ sessionId: session.id, senderId: session.mentorId, content: 'Session completed! Please rate your experience.', type: 'system' });
 
     const notifData = [session.mentorId, session.learnerId].map(userId => ({
       userId,
       type: 'session_completed',
-      title: 'Session Completed',
-      message: `Your session on "${session.topic}" has been completed. Please submit your rating.`,
+      title: 'Session Completed 🎉',
+      message: `Your session on "${session.topic}" is complete! Please rate your experience.`,
       linkTo: `/session/${session.id}`,
     }));
     await Notification.bulkCreate(notifData);
+
+    // Send session-completed email to both mentor and learner
+    const [mentor, learner] = await Promise.all([
+      User.findByPk(session.mentorId, { attributes: ['fullName', 'email'] }),
+      User.findByPk(session.learnerId, { attributes: ['fullName', 'email'] }),
+    ]);
+    const mentorEmail = templates.sessionCompleted(mentor.fullName, session.topic, session.id);
+    const learnerEmail = templates.sessionCompleted(learner.fullName, session.topic, session.id);
+    sendMail({ to: mentor.email, ...mentorEmail });
+    sendMail({ to: learner.email, ...learnerEmail });
 
     res.json({ message: 'Session completed', session });
   } catch (error) {

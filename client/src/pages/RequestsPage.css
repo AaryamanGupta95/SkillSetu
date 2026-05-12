@@ -29,3 +29,15 @@
 .rq-accept-btn:hover { box-shadow: var(--shadow-md); }
 .rq-reject-btn { background: var(--bg-primary); color: var(--kuro); border: 1.5px solid var(--border-color); }
 .rq-reject-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .rq-container { padding: 1.25rem; }
+  .rq-header h1 { font-size: 1.4rem; }
+  .rq-tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.5rem; }
+  .rq-card { padding: 1.25rem; }
+  .rq-card-top { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .rq-meta { gap: 0.75rem; }
+  .rq-actions { flex-direction: column; }
+  .rq-accept-btn, .rq-reject-btn { width: 100%; justify-content: center; }
+}

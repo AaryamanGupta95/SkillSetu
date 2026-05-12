@@ -16,6 +16,7 @@ const api = {
   // Auth
   register: async (data) => handleResponse(await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) })),
   login: async (data) => handleResponse(await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) })),
+  firebaseLogin: async (data) => handleResponse(await fetch(`${API_URL}/auth/firebase-login`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) })),
   getProfile: async () => handleResponse(await fetch(`${API_URL}/auth/profile`, { headers: getHeaders() })),
   updateAuthProfile: async (data) => handleResponse(await fetch(`${API_URL}/auth/profile`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify(data) })),
   forgotPassword: async (data) => handleResponse(await fetch(`${API_URL}/auth/forgot-password`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) })),

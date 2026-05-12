@@ -1,10 +1,72 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { sendMail, templates } = require('../utils/mailer');
 const { Op } = require('sequelize');
 const { User, Wallet, Certificate, Achievement } = require('../models');
 require('dotenv').config();
+const admin = require('../config/firebaseAdmin');
+
+// Register
+exports.firebaseLogin = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) return res.status(400).json({ message: 'No token provided' });
+
+    // Verify token with Firebase Admin
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { email, name, picture } = decodedToken;
+
+    // Check if user exists
+    let user = await User.findOne({ where: { email } });
+    
+    if (!user) {
+      // Auto-register new user from Google
+      // Generate random password since they login with Google
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      const hashedPassword = await bcrypt.hash(randomPassword, 12);
+      
+      user = await User.create({
+        fullName: name || 'Google User',
+        email,
+        password: hashedPassword,
+        profilePicture: picture || null,
+        isVerified: true // Auto-verify Google users
+      });
+      
+      // Give starter credits
+      await Wallet.create({ userId: user.id, balance: 150 });
+      
+      // Welcome email
+      const welcome = templates.welcome(user.fullName);
+      sendMail({ to: user.email, ...welcome });
+    }
+
+    // Generate JWT (matching existing system)
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const wallet = await Wallet.findOne({ where: { userId: user.id } });
+
+    res.status(200).json({
+      message: 'Google login successful!',
+      token,
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        credits: user.credits,
+        role: user.role,
+        skillsOffered: user.skillsOffered,
+        skillsWanted: user.skillsWanted,
+        bio: user.bio,
+        profilePicture: user.profilePicture,
+        walletBalance: wallet ? wallet.balance : 0,
+      },
+    });
+  } catch (err) {
+    console.error('Firebase login error:', err);
+    res.status(500).json({ message: 'Authentication failed. Please try again.' });
+  }
+};
 
 // Register
 exports.register = async (req, res) => {
@@ -27,7 +89,11 @@ exports.register = async (req, res) => {
     });
 
     // Create wallet with starter credits
-    await Wallet.create({ userId: user.id, balance: 100 });
+    await Wallet.create({ userId: user.id, balance: 150 });
+
+    // Send welcome email (non-blocking)
+    const welcome = templates.welcome(user.fullName);
+    sendMail({ to: user.email, ...welcome });
 
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
@@ -169,18 +235,9 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-    });
-
     const resetUrl = `${process.env.FRONTEND_URL}/auth?reset=${resetToken}`;
-    await transporter.sendMail({
-      to: user.email,
-      from: process.env.EMAIL_USER,
-      subject: 'SkillSetu Password Reset',
-      text: `Click here to reset your password: ${resetUrl}`,
-    });
+    const resetEmail = templates.passwordReset(resetUrl);
+    await sendMail({ to: user.email, ...resetEmail });
 
     res.status(200).json({ message: 'Password reset link sent to email!' });
   } catch (err) {

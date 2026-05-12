@@ -448,9 +448,18 @@
 /* Responsive Overrides */
 @media (max-width: 768px) {
   .explore-content {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
   
+  .explore-header {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .explore-title h1 {
+    font-size: 1.6rem;
+  }
+
   .search-bar-container {
     flex-direction: column;
     align-items: stretch;
@@ -462,6 +471,29 @@
 
   .explore-controls {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .custom-select-container {
+    flex: 1;
+  }
+
+  .mentor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trending-section {
+    flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .trending-tags {
+    width: 100%;
   }
 }

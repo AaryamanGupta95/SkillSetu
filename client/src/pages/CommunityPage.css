@@ -208,3 +208,34 @@
 .submit-btn:hover:not(:disabled) {
   background: #333;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .community-hub {
+    padding: 1.25rem;
+  }
+
+  .community-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .community-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .create-comm-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .community-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
