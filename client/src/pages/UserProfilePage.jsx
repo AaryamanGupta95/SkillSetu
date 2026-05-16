@@ -15,6 +15,16 @@ const UserProfilePage = () => {
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
 
+  // Returns the current date-time string in "YYYY-MM-DDTHH:MM" format (local time)
+  // Used as the `min` value for the datetime-local input so past times are greyed out
+  const getMinDateTime = () => {
+    const now = new Date();
+    // Strip seconds and milliseconds for comparison
+    now.setSeconds(0, 0);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -32,6 +42,19 @@ const UserProfilePage = () => {
 
   const handleSendRequest = async (e) => {
     e.preventDefault();
+
+    // Client-side guard: reject past dates before hitting the API
+    const selected = new Date(requestForm.scheduledDate);
+    const now = new Date();
+    // Strip seconds and milliseconds from both for a fair comparison
+    selected.setSeconds(0, 0);
+    now.setSeconds(0, 0);
+
+    if (selected < now) {
+      setMessage('⚠️ Cannot schedule a session in the past. Please pick a current or future time.');
+      return;
+    }
+
     setSending(true);
     try {
       await api.createSessionRequest({
@@ -45,7 +68,7 @@ const UserProfilePage = () => {
       setShowRequestForm(false);
       setRequestForm({ topic: '', description: '', duration: 60, scheduledDate: '' });
     } catch (err) {
-      setMessage(err.message);
+      setMessage(err.response?.data?.message || err.message);
     } finally {
       setSending(false);
     }
@@ -124,7 +147,13 @@ const UserProfilePage = () => {
             </div>
             <div className="up-form-group">
               <label>Scheduled Date & Time</label>
-              <input type="datetime-local" value={requestForm.scheduledDate} onChange={e => setRequestForm({...requestForm, scheduledDate: e.target.value})} required />
+              <input
+                type="datetime-local"
+                value={requestForm.scheduledDate}
+                min={getMinDateTime()}
+                onChange={e => setRequestForm({...requestForm, scheduledDate: e.target.value})}
+                required
+              />
             </div>
             <div className="up-form-group">
               <label>Description (optional)</label>

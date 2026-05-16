@@ -28,14 +28,14 @@ const server = http.createServer(app);
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:5174'],
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true,
 }));
 app.use(express.json());
@@ -87,10 +87,27 @@ io.on('connection', (socket) => {
     socket.to(`session_${data.sessionId}`).emit('user_stop_typing', data);
   });
 
+  socket.on('session_started', (data) => {
+    // Broadcast to everyone else in the session room so their UI flips to active
+    socket.to(`session_${data.sessionId}`).emit('session_started', data);
+  });
+
   socket.on('session_ended', (data) => {
     // Broadcast to everyone else in the session room
     socket.to(`session_${data.sessionId}`).emit('session_ended', data);
   });
+
+  // ── WebRTC signaling relay ────────────────────────────────────────────────
+  // The server is just a relay — it passes messages between the two peers.
+  // All media stays peer-to-peer; only signaling goes through the server.
+  socket.on('webrtc_call_start',     (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_incoming_call',  data));
+  socket.on('webrtc_call_accept',    (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_call_accepted',  data));
+  socket.on('webrtc_call_reject',    (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_call_rejected',  data));
+  socket.on('webrtc_offer',          (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_offer',          data));
+  socket.on('webrtc_answer',         (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_answer',         data));
+  socket.on('webrtc_ice_candidate',  (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_ice_candidate',  data));
+  socket.on('webrtc_call_end',       (data) => socket.to(`session_${data.sessionId}`).emit('webrtc_call_ended',     data));
+  // ─────────────────────────────────────────────────────────────────────────
 
   socket.on('disconnect', () => {
     if (socket.userId) {
@@ -106,20 +123,26 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Create database if not exists
-    const mysql = require('mysql2/promise');
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-    });
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
-    await connection.end();
-    console.log('📦 Database ensured');
+    // Only attempt to create database if we are NOT using a single connection string
+    if (!process.env.DATABASE_URL) {
+      try {
+        const mysql = require('mysql2/promise');
+        const connection = await mysql.createConnection({
+          host: process.env.DB_HOST,
+          port: process.env.DB_PORT,
+          user: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+        });
+        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
+        await connection.end();
+        console.log('📦 Database ensured');
+      } catch (dbErr) {
+        console.log('⚠️ Could not auto-create database (may already exist or insufficient permissions)');
+      }
+    }
 
     await sequelize.authenticate();
-    console.log('✅ MySQL connected successfully.');
+    console.log('✅ Database connected successfully.');
 
     // Sync models
     await sequelize.sync({ alter: true });

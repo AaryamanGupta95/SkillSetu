@@ -16,6 +16,11 @@ const ProfilePage = () => {
   // Certificate State
   const [certForm, setCertForm] = useState({ title: '', issuer: '' });
   const [certFile, setCertFile] = useState(null);
+  
+  // Journey/Achievement State
+  const [isAddingJourney, setIsAddingJourney] = useState(false);
+  const [journeyForm, setJourneyForm] = useState({ content: '' });
+  const [journeyFile, setJourneyFile] = useState(null);
 
   useEffect(() => {
     fetchProfile();
@@ -33,8 +38,40 @@ const ProfilePage = () => {
     }
   };
 
+  const validateEditForm = () => {
+    if (!editForm.fullName || editForm.fullName.trim().length < 2) {
+      alert('Please enter a valid full name (at least 2 characters).');
+      return false;
+    }
+    
+    if (editForm.bio && editForm.bio.length > 300) {
+      alert('Bio is too long (maximum 300 characters).');
+      return false;
+    }
+
+    const urlPattern = /^https?:\/\/.+/i;
+    if (editForm.githubLink && !urlPattern.test(editForm.githubLink)) {
+      alert('Please enter a valid GitHub URL starting with http:// or https://');
+      return false;
+    }
+    if (editForm.portfolioLink && !urlPattern.test(editForm.portfolioLink)) {
+      alert('Please enter a valid Portfolio URL starting with http:// or https://');
+      return false;
+    }
+
+    const phonePattern = /^\+?[\d\s-]{10,}$/;
+    if (editForm.mobileNumber && !phonePattern.test(editForm.mobileNumber)) {
+      alert('Please enter a valid mobile number.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEditForm()) return;
+    
     try {
       const formData = new FormData();
       formData.append('fullName', editForm.fullName || '');
@@ -98,6 +135,25 @@ const ProfilePage = () => {
     }
   };
 
+  const handleJourneySubmit = async (e) => {
+    e.preventDefault();
+    if (!journeyForm.content.trim()) return;
+    
+    try {
+      const formData = new FormData();
+      formData.append('content', journeyForm.content);
+      if (journeyFile) formData.append('achievementImage', journeyFile);
+      
+      await api.postAchievement(formData);
+      setIsAddingJourney(false);
+      setJourneyForm({ content: '' });
+      setJourneyFile(null);
+      fetchProfile();
+    } catch (err) {
+      alert(err.message || 'Error posting to journey');
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
 
   const profileImageUrl = profile?.profilePicture 
@@ -138,11 +194,11 @@ const ProfilePage = () => {
                 </div>
                 <div className="edit-group">
                   <label>GitHub Link</label>
-                  <input type="url" value={editForm.githubLink || ''} onChange={(e) => setEditForm({...editForm, githubLink: e.target.value})} />
+                  <input type="url" placeholder="https://github.com/yourusername" value={editForm.githubLink || ''} onChange={(e) => setEditForm({...editForm, githubLink: e.target.value})} />
                 </div>
                 <div className="edit-group">
                   <label>Portfolio Link</label>
-                  <input type="url" value={editForm.portfolioLink || ''} onChange={(e) => setEditForm({...editForm, portfolioLink: e.target.value})} />
+                  <input type="url" placeholder="https://yourportfolio.com" value={editForm.portfolioLink || ''} onChange={(e) => setEditForm({...editForm, portfolioLink: e.target.value})} />
                 </div>
                 <div className="edit-group col-span-2">
                   <label>Skills to Teach (comma separated)</label>
@@ -243,7 +299,29 @@ const ProfilePage = () => {
               <div className="editorial-achievements">
                 <div className="editorial-section-header">
                   <h2>The Journey</h2>
+                  <button className="editorial-read-more small" onClick={() => setIsAddingJourney(!isAddingJourney)}>
+                    {isAddingJourney ? 'Cancel' : 'Add Update +'}
+                  </button>
                 </div>
+
+                {isAddingJourney && (
+                  <form onSubmit={handleJourneySubmit} className="editorial-add-journey">
+                    <textarea 
+                      placeholder="Share a milestone, a lesson learned, or a project update..." 
+                      required 
+                      value={journeyForm.content} 
+                      onChange={e => setJourneyForm({...journeyForm, content: e.target.value})}
+                      rows={3}
+                    />
+                    <div className="form-footer">
+                      <input type="file" accept="image/*" onChange={e => setJourneyFile(e.target.files[0])} id="journey-upload" hidden />
+                      <label htmlFor="journey-upload" className="file-label">
+                        {journeyFile ? '📷 Image selected' : '📷 Add Image'}
+                      </label>
+                      <button type="submit" className="editorial-btn-primary small">Post Update</button>
+                    </div>
+                  </form>
+                )}
                 <div className="editorial-feed">
                   {profile?.achievements?.length > 0 ? profile.achievements.map((post) => (
                     <div key={post.id} className="editorial-feed-card">

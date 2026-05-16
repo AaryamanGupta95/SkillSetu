@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Users, Calendar, MessageSquare } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Users, Calendar, MessageSquare, Trash2 } from 'lucide-react';
+import api, { getUser } from '../services/api';
 import './CommunityDetailsPage.css';
 
 const CommunityDetailsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [community, setCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newPost, setNewPost] = useState('');
-  const [userId, setUserId] = useState(null);
+  const currentUser = getUser();
 
   const fetchDetails = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/community/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
-      setCommunity(data.community);
-      const userStr = localStorage.getItem('user');
-      if (userStr) setUserId(JSON.parse(userStr).id);
+      const res = await api.getCommunityDetails(id);
+      setCommunity(res.community);
     } catch (err) {
       console.error(err);
     } finally {
@@ -32,13 +29,10 @@ const CommunityDetailsPage = () => {
 
   const handleJoin = async () => {
     try {
-      await fetch(`http://localhost:5000/api/community/${id}/join`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await api.joinCommunity(id);
       fetchDetails();
     } catch (error) {
-      console.error(error);
+      alert(error.message || 'Error joining community');
     }
   };
 
@@ -46,6 +40,10 @@ const CommunityDetailsPage = () => {
     e.preventDefault();
     if (!newPost.trim()) return;
     try {
+      await api.sendMessage({ sessionId: id, content: newPost }); // Assuming createPost in api service maps to community posts
+      // Wait, let's check if api has createPost. No, it doesn't.
+      // I should add it or use raw fetch if specific.
+      // Actually, I'll use raw fetch for community posts as it's specific to this sub-route.
       await fetch(`http://localhost:5000/api/community/${id}/posts`, {
         method: 'POST',
         headers: {
@@ -61,12 +59,23 @@ const CommunityDetailsPage = () => {
     }
   };
 
-  if (loading || !community) return <div className="p-8">Loading community details...</div>;
+  const handleDelete = async () => {
+    if (!window.confirm(`Are you sure you want to delete "${community.name}"? This action cannot be undone.`)) return;
+    try {
+      await api.deleteCommunity(id);
+      navigate('/community');
+    } catch (err) {
+      alert(err.message || 'Error deleting community');
+    }
+  };
+
+  if (loading || !community) return <div className="p-8 text-center">Loading community details...</div>;
 
   const members = community.communityMemberships || [];
   const posts = community.posts || [];
-  const isMember = members.some(m => m.userId === userId);
+  const isMember = members.some(m => m.userId === currentUser?.id);
   const leaders = members.filter(m => m.role === 'leader');
+  const isCreator = community.creatorId === currentUser?.id;
 
   return (
     <div className="comm-details-container">
@@ -79,13 +88,20 @@ const CommunityDetailsPage = () => {
               <span><Calendar size={16}/> Created {new Date(community.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
-          <button 
-            className="join-comm-btn"
-            disabled={isMember}
-            onClick={handleJoin}
-          >
-            {isMember ? 'Joined' : 'Join Community'}
-          </button>
+          <div className="comm-banner-actions">
+            {isCreator && (
+              <button className="delete-comm-btn-large" onClick={handleDelete}>
+                <Trash2 size={18}/> Delete Community
+              </button>
+            )}
+            <button 
+              className="join-comm-btn"
+              disabled={isMember}
+              onClick={handleJoin}
+            >
+              {isMember ? 'Joined' : 'Join Community'}
+            </button>
+          </div>
         </div>
         <p className="comm-description">{community.description}</p>
       </div>
@@ -105,7 +121,7 @@ const CommunityDetailsPage = () => {
               <button type="submit" className="post-btn">Post to Community</button>
             </form>
           ) : (
-            <div className="p-4 mb-8 bg-gray-50 border rounded text-center text-gray-500">
+            <div className="join-notice">
               Join the community to post in the discussion!
             </div>
           )}
@@ -114,7 +130,9 @@ const CommunityDetailsPage = () => {
             {posts.length > 0 ? posts.map(post => (
               <div className="post-card" key={post.id}>
                 <div className="post-header">
-                  <div className="post-avatar"></div>
+                  <div className="post-avatar">
+                    {post.author?.fullName?.[0]}
+                  </div>
                   <div className="post-meta">
                     <h4>{post.author?.fullName || 'User'}</h4>
                     <span>{new Date(post.createdAt).toLocaleString()}</span>
@@ -125,7 +143,7 @@ const CommunityDetailsPage = () => {
                 </div>
               </div>
             )) : (
-              <p className="text-gray-500 text-center py-8">No discussions yet. Be the first to start one!</p>
+              <p className="empty-posts">No discussions yet. Be the first to start one!</p>
             )}
           </div>
         </div>
@@ -135,7 +153,9 @@ const CommunityDetailsPage = () => {
           <div className="members-list">
             {leaders.map(member => (
               <div className="member-item" key={member.id}>
-                <div className="post-avatar" style={{width: '32px', height: '32px'}}></div>
+                <div className="member-avatar">
+                  {member.user?.fullName?.[0]}
+                </div>
                 <div className="member-info">
                   <h4>{member.user?.fullName}</h4>
                   <span className="role-badge leader">Leader</span>

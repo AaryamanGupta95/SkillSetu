@@ -15,6 +15,18 @@ const createRequest = async (req, res) => {
     if (!topic || !scheduledDate) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
+
+    // Validate that the scheduled date is not in the past
+    const scheduled = new Date(scheduledDate);
+    const now = new Date();
+    // Strip seconds and milliseconds for a fair "present" comparison
+    scheduled.setSeconds(0, 0);
+    now.setSeconds(0, 0);
+
+    if (scheduled < now) {
+      return res.status(400).json({ message: 'Session cannot be scheduled in the past. Please choose a current or future time.' });
+    }
+
     if (req.userId === parseInt(receiverId)) {
       return res.status(400).json({ message: 'Cannot send request to yourself' });
     }
@@ -237,6 +249,17 @@ const startSession = async (req, res) => {
     if (!session) return res.status(404).json({ message: 'Session not found' });
     if (session.mentorId !== req.userId && session.learnerId !== req.userId) return res.status(403).json({ message: 'Not authorized' });
     if (session.status !== 'confirmed') return res.status(400).json({ message: 'Session cannot be started' });
+
+    // Block starting the session before its scheduled time
+    const now = new Date();
+    const scheduledAt = new Date(session.scheduledDate);
+    if (now < scheduledAt) {
+      const minutesLeft = Math.ceil((scheduledAt - now) / 60000);
+      return res.status(400).json({
+        message: `Session cannot be started yet. It is scheduled to begin in ${minutesLeft} minute${minutesLeft !== 1 ? 's' : ''}.`,
+        scheduledDate: session.scheduledDate,
+      });
+    }
 
     session.status = 'active';
     session.startTime = new Date();

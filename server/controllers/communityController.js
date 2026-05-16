@@ -77,6 +77,23 @@ exports.deleteAchievement = async (req, res) => {
   }
 };
 
+// Like/Congratulate an achievement
+exports.likeAchievement = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const achievement = await Achievement.findByPk(id);
+    if (!achievement) return res.status(404).json({ message: 'Achievement not found' });
+
+    achievement.likesCount += 1;
+    await achievement.save();
+
+    res.status(200).json({ message: 'Celebrated!', likesCount: achievement.likesCount });
+  } catch (err) {
+    console.error('likeAchievement error:', err);
+    res.status(500).json({ message: 'Error liking achievement' });
+  }
+};
+
 const { Community, CommunityMember, CommunityPost } = require('../models');
 
 // Communities
@@ -103,6 +120,26 @@ exports.createCommunity = async (req, res) => {
     res.json({ message: 'Community created', community });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.deleteCommunity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const community = await Community.findByPk(id);
+
+    if (!community) return res.status(404).json({ message: 'Community not found' });
+
+    // Only the creator can delete the community
+    if (community.creatorId !== req.userId) {
+      return res.status(403).json({ message: 'Only the creator can delete this community' });
+    }
+
+    await community.destroy();
+    res.status(200).json({ message: 'Community deleted successfully' });
+  } catch (error) {
+    console.error('deleteCommunity error:', error);
+    res.status(500).json({ message: 'Server error while deleting community' });
   }
 };
 

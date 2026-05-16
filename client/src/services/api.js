@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getToken = () => localStorage.getItem('token');
 const getHeaders = () => ({
@@ -56,6 +56,13 @@ const api = {
     return handleResponse(res);
   },
   deleteAchievement: async (id) => handleResponse(await fetch(`${API_URL}/community/achievements/${id}`, { method: 'DELETE', headers: getHeaders() })),
+  likeAchievement: async (id) => handleResponse(await fetch(`${API_URL}/community/achievements/${id}/like`, { method: 'PUT', headers: getHeaders() })),
+
+  getCommunities: async () => handleResponse(await fetch(`${API_URL}/community`, { headers: getHeaders() })),
+  createCommunity: async (data) => handleResponse(await fetch(`${API_URL}/community`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) })),
+  joinCommunity: async (id) => handleResponse(await fetch(`${API_URL}/community/${id}/join`, { method: 'POST', headers: getHeaders() })),
+  getCommunityDetails: async (id) => handleResponse(await fetch(`${API_URL}/community/${id}`, { headers: getHeaders() })),
+  deleteCommunity: async (id) => handleResponse(await fetch(`${API_URL}/community/${id}`, { method: 'DELETE', headers: getHeaders() })),
 
   // Users / Marketplace
   searchUsers: async (params = {}) => {

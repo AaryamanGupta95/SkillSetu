@@ -108,6 +108,30 @@
   font-weight: 500;
 }
 
+.comm-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.delete-comm-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.delete-comm-btn:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
 .view-comm-btn {
   background: transparent;
   color: var(--kuro);
@@ -237,5 +261,193 @@
   .modal-content {
     width: 95%;
     padding: 1.5rem;
+  }
+}
+
+/* ── New Additions ── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.tab-switcher {
+  display: flex;
+  background: var(--bg-primary);
+  padding: 0.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.tab-switcher button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-switcher button.active {
+  background: var(--shiro);
+  color: var(--kuro);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.community-loading {
+  text-align: center;
+  padding: 5rem 0;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-light);
+  border-top-color: var(--kuro);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Journey Feed */
+.journey-feed {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.feed-card {
+  background: var(--shiro);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.feed-card-header {
+  margin-bottom: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-primary);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--kuro);
+  border: 1px solid var(--border-light);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--kuro);
+}
+
+.post-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.feed-content {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 1.25rem;
+}
+
+.feed-image {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  margin-bottom: 1.25rem;
+  background: #f9f9f9;
+}
+
+.feed-image img {
+  width: 100%;
+  display: block;
+  max-height: 450px;
+  object-fit: contain;
+}
+
+.feed-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.feed-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.feed-action-btn:hover {
+  color: var(--kuro);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--text-secondary);
+}
+
+.empty-state svg {
+  margin-bottom: 1.5rem;
+  opacity: 0.3;
+}
+
+.empty-state h3 {
+  color: var(--kuro);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .community-header {
+    align-items: stretch;
+  }
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .tab-switcher {
+    justify-content: center;
   }
 }

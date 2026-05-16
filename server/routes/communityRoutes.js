@@ -15,10 +15,14 @@ router.post('/achievements', auth, upload.single('achievementImage'), communityC
 // Delete a post
 router.delete('/achievements/:id', auth, communityController.deleteAchievement);
 
+// Like a post
+router.put('/achievements/:id/like', auth, communityController.likeAchievement);
+
 // Community Routes
 router.get('/', auth, communityController.getCommunities);
 router.post('/', auth, communityController.createCommunity);
 router.get('/:id', auth, communityController.getCommunityDetails);
+router.delete('/:id', auth, communityController.deleteCommunity);
 router.post('/:id/join', auth, communityController.joinCommunity);
 router.post('/:id/posts', auth, communityController.createPost);
 
